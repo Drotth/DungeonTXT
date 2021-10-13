@@ -5,17 +5,25 @@
 Dungeon::Dungeon()
 {
 
-    Room firstRoom("Room 0");
+    Room firstRoom(Position(0,0), "Room 0");
     allDungeonRooms.push_back(firstRoom);
 
-    Room secondRoom("Room 1");
+    Room secondRoom(Position(1,0), "Room 1");
     allDungeonRooms.push_back(secondRoom);
 
-    Room thirdRoom("Room 2");
+    Room thirdRoom(Position(2,0), "Room 2");
     allDungeonRooms.push_back(thirdRoom);
 
     Door newDoor("Room 0-1", allDungeonRooms.at(0).roomName, allDungeonRooms.at(1).roomName);
     allDungeonDoors.push_back(newDoor);
+
+    //---new roomgeneration idea:---
+    //start with one room. create new one in random direction (plus door inbetween)
+    //continue with this in random directions.
+    //if the new room, in that particular direction hits an existing room, instead
+    //randomize if a door is to be created, and the pick another direction for a new room
+    //and repeat.
+    //Rooms probably need coordinates to check collisions, and if map idea should work
 }
 
 std::vector<std::string> Dungeon::getRoomDoors(std::string currentRoomName)

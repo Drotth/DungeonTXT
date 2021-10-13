@@ -8,26 +8,28 @@ int main()
 	Dungeon newDungeon;
 
 	// Verify room/door setups
-	// cout << "Nbr of rooms: " << newDungeon.dungeonRooms.size() << endl;
-	// cout << "Nbr of doors: " << newDungeon.dungeonDoors.size() << endl;
+	cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
+	cout << "Nbr of doors: " << newDungeon.allDungeonDoors.size() << endl;
 
-	// for (Room room : newDungeon.dungeonRooms)
-	// {
-	// 	cout << "Roomlist: " << room.roomName << endl;
-	// }
-
-	// for (Door door : newDungeon.dungeonDoors)
-	// {
-	// 	cout << "doorlist: Room A: " << door.roomA << endl;
-	// 	cout << "doorlist: Room B: " << door.roomB << endl;
-	// }
-
-	string currentRoom = "Room 2";
-	vector<string> doors = newDungeon.getRoomDoors(currentRoom);
-
-	cout << "Doors in " << currentRoom << endl;
-	for (string door : doors)
+	for (Room room : newDungeon.allDungeonRooms)
 	{
-		cout << door << endl;
+		cout << "Roomlist: " << room.roomName << endl;
+		cout << "Roomlist: " << room.roomPos << endl;
 	}
+
+	for (Door door : newDungeon.allDungeonDoors)
+	{
+		cout << "Doorlist: Room A: " << door.roomA << endl;
+		cout << "Doorlist: Room B: " << door.roomB << endl;
+	}
+
+	// Verify get doors in room
+	// string currentRoom = "Room 2";
+	// vector<string> doors = newDungeon.getRoomDoors(currentRoom);
+
+	// cout << "Doors in " << currentRoom << endl;
+	// for (string door : doors)
+	// {
+	// 	cout << door << endl;
+	// }
 }

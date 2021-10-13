@@ -1,7 +1,8 @@
 #include "Room.h"
 
-Room::Room(std::string name)
+Room::Room(Position pos, std::string name)
 {
+    roomPos = pos;
     roomName = name;
 }
 
