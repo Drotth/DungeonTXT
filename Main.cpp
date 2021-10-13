@@ -1,5 +1,7 @@
 #include <iostream>
+#include <unistd.h>
 #include "Dungeon.h"
+#include "Map.h"
 
 using namespace std;
 
@@ -11,26 +13,27 @@ int main()
 	cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
 	cout << "Nbr of doors: " << newDungeon.allDungeonDoors.size() << endl;
 
-	for (int index = 0; index < newDungeon.allDungeonRooms.size(); index++)
+	for (auto i = newDungeon.allDungeonRooms.begin(); i != newDungeon.allDungeonRooms.end(); i++)
 	{
-		cout << "[" << index << "]: " << 
-		newDungeon.allDungeonRooms.at(index).roomName << "\t" <<
-		newDungeon.allDungeonRooms.at(index).roomPos << endl;
+		cout << i->second.roomName << "\t" << i->second.roomPos << endl;
 	}
 
-	// for (Door door : newDungeon.allDungeonDoors)
-	// {
-	// 	cout << "Doorlist: Room A: " << door.roomA << endl;
-	// 	cout << "Doorlist: Room B: " << door.roomB << endl;
-	// }
+	for (auto i2 = newDungeon.allDungeonDoors.begin(); i2 != newDungeon.allDungeonDoors.end(); i2++)
+	{
+		cout << i2->second.doorName << "\t" << i2->second.roomA << "\t" << i2->second.roomB << endl;
+	}
 
 	// Verify get doors in room
-	// string currentRoom = "Room 2";
-	// vector<string> doors = newDungeon.getRoomDoors(currentRoom);
+	string currentRoom = "Room 2";
+	vector<string> doors = newDungeon.getRoomDoors(currentRoom);
 
-	// cout << "Doors in " << currentRoom << endl;
-	// for (string door : doors)
-	// {
-	// 	cout << door << endl;
-	// }
+	cout << "Doors in " << currentRoom << endl;
+	for (string door : doors)
+	{
+		cout << door << endl;
+	}
+
+	// Verify map print
+	// Map map(newDungeon.allDungeonRooms, newDungeon.allDungeonDoors);
+	// map.printMap();
 }

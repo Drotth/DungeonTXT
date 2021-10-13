@@ -12,14 +12,8 @@ Dungeon::Dungeon()
     createNextRoom(WEST, "Room 3");
     createNextRoom(NORTH, "Room 4");
 
-    // Room secondRoom(Position(1,0), "Room 1");
-    // allDungeonRooms.push_back(secondRoom);
-
-    // Room thirdRoom(Position(2,0), "Room 2");
-    // allDungeonRooms.push_back(thirdRoom);
-
-    // Door newDoor("Room 0-1", allDungeonRooms.at(0).roomName, allDungeonRooms.at(1).roomName);
-    // allDungeonDoors.push_back(newDoor);
+    Door newDoor("Room 1-2", allDungeonRooms.at("Room 1").roomName, allDungeonRooms.at("Room 2").roomName);
+    allDungeonDoors.insert({"Room 1-2", newDoor});
 
     //---new roomgeneration idea:---
     //start with one room. create new one in random direction (plus door inbetween)
@@ -33,15 +27,13 @@ Dungeon::Dungeon()
 void Dungeon::createStartRoom()
 {
     Room starterRoom(Position(0, 0), "Room 0");
-    allDungeonRooms.push_back(starterRoom);
-    lastBuiltRoom = &(allDungeonRooms.back());
+    allDungeonRooms.insert({"Room 0", starterRoom});
+    lastBuiltRoom = &(allDungeonRooms.at("Room 0"));
 }
 
 void Dungeon::createNextRoom(Direction dir, std::string name)
 {
     Position lastBuiltPos = lastBuiltRoom->roomPos;
-
-    // std::cout << "lastBuiltPos before nextRoom(): " << lastBuiltPos << std::endl;
 
     switch (dir)
     {
@@ -62,20 +54,18 @@ void Dungeon::createNextRoom(Direction dir, std::string name)
 
 void Dungeon::createRoom(Position pos, std::string name){
     Room newRoom(pos, name);
-    allDungeonRooms.push_back(newRoom);
-    lastBuiltRoom = &(allDungeonRooms.back());
+    allDungeonRooms.insert({name, newRoom});
+    lastBuiltRoom = &(allDungeonRooms.at(name));
 }
 
 std::vector<std::string> Dungeon::getRoomDoors(std::string currentRoomName)
 {
     std::vector<std::string> roomDoors;
-    for (int index = 0; index < allDungeonDoors.size(); index++)
-    {
-        if (allDungeonDoors.at(index).roomA == currentRoomName ||
-            allDungeonDoors.at(index).roomB == currentRoomName)
-        {
-            roomDoors.push_back(allDungeonDoors.at(index).doorName);
+    for (auto i = allDungeonDoors.begin(); i != allDungeonDoors.end(); i++)
+	{
+        if(i->second.roomA == currentRoomName || i->second.roomB == currentRoomName){
+            roomDoors.push_back(i->first);
         }
-    }
+	}
     return roomDoors;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 #include "Door.h"
 #include "Room.h"
 
@@ -11,8 +12,8 @@ private:
 	Room* lastBuiltRoom;
 	void createRoom(Position, std::string);
 public:
-	std::vector<Room> allDungeonRooms;
-	std::vector<Door> allDungeonDoors;
+	std::unordered_map<std::string, Room> allDungeonRooms;
+	std::unordered_map<std::string, Door> allDungeonDoors;
 	Dungeon();
 	void createStartRoom();
 	void createNextRoom(Direction, std::string);
