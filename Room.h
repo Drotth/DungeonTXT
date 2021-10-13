@@ -19,6 +19,11 @@ struct Position
         return *this;
     }
 
+    Position operator+(const Position& a) const
+    {
+        return Position(a.x+x, a.y+y);
+    }
+
     bool operator==(const Position &a) const
     {
         return (x == a.x && y == a.y);
@@ -26,7 +31,7 @@ struct Position
 
     friend std::ostream &operator<<(std::ostream &os, const Position &pos)
     {
-        return os << "x:" << pos.x << ", y:" << pos.y << std::endl;
+        return os << "x:" << pos.x << ", y:" << pos.y;
     }
 };
 

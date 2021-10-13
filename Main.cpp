@@ -11,17 +11,18 @@ int main()
 	cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
 	cout << "Nbr of doors: " << newDungeon.allDungeonDoors.size() << endl;
 
-	for (Room room : newDungeon.allDungeonRooms)
+	for (int index = 0; index < newDungeon.allDungeonRooms.size(); index++)
 	{
-		cout << "Roomlist: " << room.roomName << endl;
-		cout << "Roomlist: " << room.roomPos << endl;
+		cout << "[" << index << "]: " << 
+		newDungeon.allDungeonRooms.at(index).roomName << "\t" <<
+		newDungeon.allDungeonRooms.at(index).roomPos << endl;
 	}
 
-	for (Door door : newDungeon.allDungeonDoors)
-	{
-		cout << "Doorlist: Room A: " << door.roomA << endl;
-		cout << "Doorlist: Room B: " << door.roomB << endl;
-	}
+	// for (Door door : newDungeon.allDungeonDoors)
+	// {
+	// 	cout << "Doorlist: Room A: " << door.roomA << endl;
+	// 	cout << "Doorlist: Room B: " << door.roomB << endl;
+	// }
 
 	// Verify get doors in room
 	// string currentRoom = "Room 2";
