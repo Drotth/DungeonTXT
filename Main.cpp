@@ -20,7 +20,7 @@ int main()
 
 	for (auto i2 = newDungeon.allDungeonDoors.begin(); i2 != newDungeon.allDungeonDoors.end(); i2++)
 	{
-		cout << i2->second.doorName << "\t" << i2->second.roomA << "\t" << i2->second.roomB << endl;
+		cout << i2->second.doorName << " goes to rooms: " << i2->second.roomA << "\t" << i2->second.roomB << endl;
 	}
 
 	// Verify get doors in room

@@ -33,6 +33,10 @@ struct Position
     {
         return os << "x:" << pos.x << ", y:" << pos.y;
     }
+
+    std::string toString() {
+        return "x:" + std::to_string(x) + ", y:" + std::to_string(y); 
+    }
 };
 
 class Room

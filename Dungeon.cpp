@@ -11,61 +11,80 @@ Dungeon::Dungeon()
     createNextRoom(NORTH, "Room 2");
     createNextRoom(WEST, "Room 3");
     createNextRoom(NORTH, "Room 4");
-
-    Door newDoor("Room 1-2", allDungeonRooms.at("Room 1").roomName, allDungeonRooms.at("Room 2").roomName);
-    allDungeonDoors.insert({"Room 1-2", newDoor});
-
-    //---new roomgeneration idea:---
-    //start with one room. create new one in random direction (plus door inbetween)
-    //continue with this in random directions.
-    //if the new room, in that particular direction hits an existing room, instead
-    //randomize if a door is to be created, and the pick another direction for a new room
-    //and repeat.
-    //Rooms probably need coordinates to check collisions, and if map idea should work
+    createNextRoom(SOUTH, "Room 5");
+    createNextRoom(NORTH, "Room 6");
 }
 
 void Dungeon::createStartRoom()
 {
-    Room starterRoom(Position(0, 0), "Room 0");
-    allDungeonRooms.insert({"Room 0", starterRoom});
-    lastBuiltRoom = &(allDungeonRooms.at("Room 0"));
+    Position startPos = Position(0, 0);
+
+    Room starterRoom(startPos, "Room 0");
+    allDungeonRooms.insert({startPos.toString(), starterRoom});
+    lastBuiltRoom = &(allDungeonRooms.at(startPos.toString()));
 }
 
-void Dungeon::createNextRoom(Direction dir, std::string name)
+bool Dungeon::createNextRoom(Direction dir, std::string name)
 {
     Position lastBuiltPos = lastBuiltRoom->roomPos;
+    Position newRoomPos;
 
     switch (dir)
     {
     case NORTH:
-        createRoom(lastBuiltPos + Position(0, 1), name);
-        break;
-    case SOUTH:
-        createRoom(lastBuiltPos + Position(0, -1), name);
-        break;
-    case WEST:
-        createRoom(lastBuiltPos + Position(-1, 0), name);
-        break;
-    case EAST:
-        createRoom(lastBuiltPos + Position(1, 0), name);
+    {
+        newRoomPos = lastBuiltPos + Position(0, 1);
         break;
     }
+    case SOUTH:
+    {
+        newRoomPos = lastBuiltPos + Position(0, -1);
+        break;
+    }
+    case WEST:
+    {
+        newRoomPos = lastBuiltPos + Position(-1, 0);
+        break;
+    }
+    case EAST:
+    {
+        newRoomPos = lastBuiltPos + Position(1, 0);
+        break;
+    }
+    default:
+        return false;
+    }
+
+    if (allDungeonRooms.find(newRoomPos.toString()) == allDungeonRooms.end())
+    {
+        createRoom(newRoomPos, name);
+
+        std::string newDoorName = "Door"+lastBuiltPos.toString()+"-"+newRoomPos.toString();
+        Door newDoor(newDoorName, allDungeonRooms.at(lastBuiltPos.toString()).roomName, allDungeonRooms.at(newRoomPos.toString()).roomName);
+        allDungeonDoors.insert({newDoorName, newDoor});
+
+        return true;
+    }
+    else
+        return false;
 }
 
-void Dungeon::createRoom(Position pos, std::string name){
+void Dungeon::createRoom(Position pos, std::string name)
+{
     Room newRoom(pos, name);
-    allDungeonRooms.insert({name, newRoom});
-    lastBuiltRoom = &(allDungeonRooms.at(name));
+    allDungeonRooms.insert({pos.toString(), newRoom});
+    lastBuiltRoom = &(allDungeonRooms.at(pos.toString()));
 }
 
 std::vector<std::string> Dungeon::getRoomDoors(std::string currentRoomName)
 {
     std::vector<std::string> roomDoors;
     for (auto i = allDungeonDoors.begin(); i != allDungeonDoors.end(); i++)
-	{
-        if(i->second.roomA == currentRoomName || i->second.roomB == currentRoomName){
+    {
+        if (i->second.roomA == currentRoomName || i->second.roomB == currentRoomName)
+        {
             roomDoors.push_back(i->first);
         }
-	}
+    }
     return roomDoors;
 }
