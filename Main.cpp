@@ -11,7 +11,7 @@ int main()
 	Dungeon newDungeon;
 
 	Player player;
-	player.currentRoom = Position(0,1);
+	player.currentRoom = Position(0,0);
 
 	// // Verify room/door setups
 	// cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;

@@ -8,5 +8,6 @@ class Room
 public:
     Position roomPos;
     std::string roomName;
+    bool isDiscovered;
     Room(Position, std::string);
 };

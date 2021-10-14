@@ -2,16 +2,23 @@
 
 using namespace std;
 
+// Void
 string space = ".......";
 string spaceExtra = ".";
+
+// Walls
 string roomXaxisFull = "--------";
 string roomXaxisExtra = "-";
 string roomXaxis1 = "--";
 string roomXaxis2 = "---";
 string roomYaxis = "|";
-string roomEmpty = "       ";
+
+// Doors
 string roomXDoors = " ";
 string roomYDoors = "   ";
+
+// Room contents
+string roomEmpty = "       ";
 string roomPlayerTop = "  _o_  ";
 string roomPlayerMiddle = "   |   ";
 string roomPlayerBottom = "  / \\  ";
@@ -34,13 +41,13 @@ void Map::calculateDungeonSize()
 {
     for (auto i = allDungeonRooms->begin(); i != allDungeonRooms->end(); i++)
     {
-        if (i->second.roomPos.x < lowestX)
+        if (i->second.roomPos.x < lowestX && i->second.isDiscovered == true)
             lowestX = i->second.roomPos.x;
-        if (i->second.roomPos.x > highestX)
+        if (i->second.roomPos.x > highestX && i->second.isDiscovered == true)
             highestX = i->second.roomPos.x;
-        if (i->second.roomPos.y < lowestY)
+        if (i->second.roomPos.y < lowestY && i->second.isDiscovered == true)
             lowestY = i->second.roomPos.y;
-        if (i->second.roomPos.y > highestY)
+        if (i->second.roomPos.y > highestY && i->second.isDiscovered == true)
             highestY = i->second.roomPos.y;
     }
 }
@@ -53,7 +60,7 @@ void Map::drawYDividers(int yLevel)
     {
         currentPos = Position(xpos, yLevel);
 
-        if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+        if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
         {
             Position potentialWestRoom = currentPos + Position(-1, 0);
             Position potentialNorthRoom = currentPos + Position(0, 1);
@@ -82,7 +89,7 @@ void Map::drawYDividers(int yLevel)
             Position potentialNorthRoom = currentPos + Position(0, 1);
             Position potentialNWRoom = currentPos + Position(-1, 1);
             Position potentialEastRoom = currentPos + Position(1, 0);
-            if (allDungeonRooms->find(potentialNorthRoom.toString()) != allDungeonRooms->end())
+            if (allDungeonRooms->find(potentialNorthRoom.toString()) != allDungeonRooms->end() && allDungeonRooms->find(potentialNorthRoom.toString())->second.isDiscovered == true)
             {
                 if (xpos == lowestX || (allDungeonRooms->find(potentialWestRoom.toString()) == allDungeonRooms->end() &&
                                         allDungeonRooms->find(potentialNWRoom.toString()) == allDungeonRooms->end()))
@@ -122,7 +129,7 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         {
         case TOP:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
                 Position potentialWestRoom = currentPos + Position(-1, 0);
                 if (xpos == lowestX || allDungeonRooms->find(potentialWestRoom.toString()) == allDungeonRooms->end())
@@ -154,7 +161,7 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         }
         case MIDDLE:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
                 Position potentialWestRoom = currentPos + Position(-1, 0);
                 Position potentialEastRoom = currentPos + Position(1, 0);
@@ -212,7 +219,7 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         }
         case BOTTOM:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
                 Position potentialWestRoom = currentPos + Position(-1, 0);
                 if (xpos == lowestX || allDungeonRooms->find(potentialWestRoom.toString()) == allDungeonRooms->end())
