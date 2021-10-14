@@ -17,6 +17,7 @@ private:
 	std::unordered_map<std::string, Room> *allDungeonRooms;
 	std::unordered_map<std::string, Door> *allDungeonDoors;
 	Dungeon *dungeon;
+	Position playerPos;
 	
 	void calculateDungeonSize();
 	void drawYDividers(int);
@@ -24,5 +25,6 @@ private:
 
 public:
 	Map(Dungeon&);
+	void setPlayerPos(Position&);
 	void printMap();
 };

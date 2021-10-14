@@ -2,12 +2,16 @@
 #include <unistd.h>
 #include "Dungeon.h"
 #include "Map.h"
+#include "Player.h"
 
 using namespace std;
 
 int main()
 {
 	Dungeon newDungeon;
+
+	Player player;
+	player.currentRoom = Position(0,1);
 
 	// // Verify room/door setups
 	// cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
@@ -42,5 +46,6 @@ int main()
 
 	// Verify maps
 	Map map(newDungeon);
+	map.setPlayerPos(player.currentRoom);
 	map.printMap();
 }

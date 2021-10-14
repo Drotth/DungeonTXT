@@ -12,9 +12,9 @@ string roomYaxis = "|";
 string roomEmpty = "       ";
 string roomXDoors = " ";
 string roomYDoors = "   ";
-string roomPlayerTop = "|  _o_  |";
-string roomPlayerMiddle = "|   |   |";
-string roomPlayerBottom = "|  / \\  |";
+string roomPlayerTop = "  _o_  ";
+string roomPlayerMiddle = "   |   ";
+string roomPlayerBottom = "  / \\  ";
 
 Map::Map(Dungeon &inDungeon)
 {
@@ -99,7 +99,8 @@ void Map::drawYDividers(int yLevel)
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
                 map.append(space);
-                if (xpos == highestX){
+                if (xpos == highestX)
+                {
                     map.append(spaceExtra);
                 }
             }
@@ -128,7 +129,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                 {
                     map.append(roomYaxis);
                 }
-                map.append(roomEmpty);
+                if (playerPos == currentPos)
+                {
+                    map.append(roomPlayerTop);
+                }
+                else
+                    map.append(roomEmpty);
                 map.append(roomYaxis);
             }
             else
@@ -139,7 +145,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
                 map.append(space);
-                if (xpos == highestX){
+                if (xpos == highestX)
+                {
                     map.append(spaceExtra);
                 }
             }
@@ -171,7 +178,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                     }
                 }
 
-                map.append(roomEmpty);
+                if (playerPos == currentPos)
+                {
+                    map.append(roomPlayerMiddle);
+                }
+                else
+                    map.append(roomEmpty);
 
                 if (dungeon->areRoomsConnected(currentPos, potentialEastRoom))
                 {
@@ -191,7 +203,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
                 map.append(space);
-                if (xpos == highestX){
+                if (xpos == highestX)
+                {
                     map.append(spaceExtra);
                 }
             }
@@ -206,7 +219,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                 {
                     map.append(roomYaxis);
                 }
-                map.append(roomEmpty);
+                if (playerPos == currentPos)
+                {
+                    map.append(roomPlayerBottom);
+                }
+                else
+                    map.append(roomEmpty);
                 map.append(roomYaxis);
             }
             else
@@ -217,7 +235,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
                 map.append(space);
-                if (xpos == highestX){
+                if (xpos == highestX)
+                {
                     map.append(spaceExtra);
                 }
             }
@@ -227,6 +246,11 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
     }
 
     map.append("\n");
+}
+
+void Map::setPlayerPos(Position &pos)
+{
+    playerPos = pos;
 }
 
 void Map::printMap()
