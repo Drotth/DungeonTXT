@@ -21,7 +21,6 @@ Position Dungeon::createStartRoom()
 
     Room starterRoom(startPos, "Room 0");
     allDungeonRooms.insert({startPos.toString(), starterRoom});
-    lastBuiltRoom = &(allDungeonRooms.at(startPos.toString()));
 
     return startPos;
 }
@@ -56,11 +55,9 @@ Position Dungeon::createNextRoom(Position previousPos, Direction dir, std::strin
         return previousPos;
     }
 
-    if (allDungeonRooms.find(newRoomPos.toString()) == allDungeonRooms.end())
+    if (createRoom(newRoomPos, name))
     {
-        createRoom(newRoomPos, name);
-
-        std::string newDoorName = "Door"+previousPos.toString()+"-"+newRoomPos.toString();
+        std::string newDoorName = "Door" + previousPos.toString() + "-" + newRoomPos.toString();
         Door newDoor(newDoorName, allDungeonRooms.at(previousPos.toString()).roomName, allDungeonRooms.at(newRoomPos.toString()).roomName);
         allDungeonDoors.insert({newDoorName, newDoor});
 
@@ -70,11 +67,14 @@ Position Dungeon::createNextRoom(Position previousPos, Direction dir, std::strin
         return previousPos;
 }
 
-void Dungeon::createRoom(Position pos, std::string name)
+bool Dungeon::createRoom(Position pos, std::string name)
 {
-    Room newRoom(pos, name);
-    allDungeonRooms.insert({pos.toString(), newRoom});
-    lastBuiltRoom = &(allDungeonRooms.at(pos.toString()));
+    if (allDungeonRooms.find(pos.toString()) == allDungeonRooms.end())
+    {
+        Room newRoom(pos, name);
+        allDungeonRooms.insert({pos.toString(), newRoom});
+        return true;
+    } else return false;
 }
 
 std::vector<std::string> Dungeon::getRoomDoors(std::string currentRoomName)

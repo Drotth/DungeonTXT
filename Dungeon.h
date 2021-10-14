@@ -9,8 +9,7 @@ enum Direction {NORTH, SOUTH, WEST, EAST};
 class Dungeon
 {
 private:
-	Room* lastBuiltRoom;
-	void createRoom(Position, std::string);
+	bool createRoom(Position, std::string);
 public:
 	std::unordered_map<std::string, Room> allDungeonRooms;
 	std::unordered_map<std::string, Door> allDungeonDoors;
