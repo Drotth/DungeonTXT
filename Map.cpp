@@ -7,13 +7,13 @@ string roomXaxisFull = "---------";
 string roomXaxis = "---";
 string roomYaxis = "|";
 string roomEmpty = "       ";
-string roomYDoors = "=";
-string roomXDoors = "| |";
+string roomXDoors = " ";
+string roomYDoors = "   ";
 string roomPlayerTop = "|  _o_  |";
 string roomPlayerMiddle = "|   |   |";
 string roomPlayerBottom = "|  / \\  |";
 
-Map::Map(Dungeon& inDungeon)
+Map::Map(Dungeon &inDungeon)
 {
     dungeon = &inDungeon;
     allDungeonRooms = &inDungeon.allDungeonRooms;
@@ -53,11 +53,14 @@ void Map::drawYDividers(int yLevel)
         if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
         {
             Position potentialNorthRoom = currentPos + Position(0, 1);
-            if (dungeon->areRoomsConnected(currentPos, potentialNorthRoom)){
+            if (dungeon->areRoomsConnected(currentPos, potentialNorthRoom))
+            {
                 map.append(roomXaxis);
-                map.append(roomXDoors);
+                map.append(roomYDoors);
                 map.append(roomXaxis);
-            } else map.append(roomXaxisFull);
+            }
+            else
+                map.append(roomXaxisFull);
         }
         else
         {
@@ -101,9 +104,21 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         {
             if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
             {
-                map.append(roomYaxis);
+                Position potentialWestRoom = currentPos + Position(-1, 0);
+                Position potentialEastRoom = currentPos + Position(1, 0);
+                if (dungeon->areRoomsConnected(currentPos, potentialWestRoom))
+                {
+                    map.append(roomXDoors);
+                }
+                else
+                    map.append(roomYaxis);
                 map.append(roomEmpty);
-                map.append(roomYaxis);
+                if (dungeon->areRoomsConnected(currentPos, potentialEastRoom))
+                {
+                    map.append(roomXDoors);
+                }
+                else
+                    map.append(roomYaxis);
             }
             else
             {
@@ -145,7 +160,8 @@ void Map::printMap()
         drawRowRooms(index, MIDDLE);
         drawRowRooms(index, BOTTOM);
 
-        if (index == lowestY) drawYDividers(index-1);
+        if (index == lowestY)
+            drawYDividers(index - 1);
     }
 
     cout << endl

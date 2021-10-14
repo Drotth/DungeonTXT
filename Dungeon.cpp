@@ -9,6 +9,7 @@ Dungeon::Dungeon()
 
     lastPos = createNextRoom(lastPos, NORTH, "Room 1");
     lastPos = createNextRoom(lastPos, NORTH, "Room 2");
+    createRoom(lastPos + Position(1,0), "Extraroom for test");
     lastPos = createNextRoom(lastPos, WEST, "Room 3");
     lastPos = createNextRoom(lastPos, NORTH, "Room 4");
     lastPos = createNextRoom(lastPos, SOUTH, "Room 5");
