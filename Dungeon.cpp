@@ -17,6 +17,12 @@ Dungeon::Dungeon()
     createRoom(lastPos + Position(0,1), "Extraroom for test");
     lastPos = createNextRoom(lastPos, EAST, "Room 7");
     lastPos = createNextRoom(lastPos, EAST, "Room 8");
+    lastPos = createNextRoom(lastPos, EAST, "Room 9");
+    lastPos = createNextRoom(lastPos, SOUTH, "Room 10");
+    createRoom(lastPos + Position(-1,0), "Extraroom for test");
+    lastPos = createNextRoom(lastPos, EAST, "Room 11");
+    lastPos = createNextRoom(lastPos, SOUTH, "Room 12");
+    lastPos = createNextRoom(lastPos, SOUTH, "Room 13");
 
     // lastPos = createNextRoom(lastPos, SOUTH, "Room 1");
     // lastPos = createNextRoom(lastPos, EAST, "Room 2");
