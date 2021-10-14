@@ -15,8 +15,8 @@ public:
 	std::unordered_map<std::string, Room> allDungeonRooms;
 	std::unordered_map<std::string, Door> allDungeonDoors;
 	Dungeon();
-	void createStartRoom();
-	bool createNextRoom(Direction, std::string);
+	Position createStartRoom();
+	Position createNextRoom(Position, Direction, std::string);
 	std::vector<std::string> getRoomDoors (std::string);
 };
 
