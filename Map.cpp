@@ -3,13 +3,14 @@
 using namespace std;
 
 // Void
-string space = ".......";
+string space = "........";
+string spaceBetweenRooms = ".......";
 string spaceExtra = ".";
 
 // Walls
 string roomXaxisFull = "--------";
 string roomXaxisExtra = "-";
-string roomXaxis1 = "--";
+string roomXaxis = "--";
 string roomXaxis2 = "---";
 string roomYaxis = "|";
 
@@ -71,42 +72,67 @@ void Map::drawYDividers(int yLevel)
     {
         currentPos = Position(xpos, yLevel);
 
-        // If there is a room on current pos AND that room is discovered
-        if (roomExists(currentPos) && roomIsDiscovered(currentPos))
+        // Capture positions closeby of relevance
+        Position WRoom = currentPos + Position(-1, 0);
+        Position NRoom = currentPos + Position(0, 1);
+        Position NWRoom = currentPos + Position(-1, 1);
+
+        // If there is a room on current pos
+        if (roomExists(currentPos))
         {
-            // Capture positions closeby of relevance
-            Position westRoom = currentPos + Position(-1, 0);
-            Position northRoom = currentPos + Position(0, 1);
-            Position NWRoom = currentPos + Position(-1, 1);
-
-            // If the position of this room is to the far left OR
-            // (there is no room to the W or NW)
-            if (xpos == lowestX || (!roomExists(westRoom) && !roomExists(NWRoom)))
+            // If the position of this room is to the far left
+            if (xpos == lowestX)
             {
-                map.append(roomXaxisExtra); //One extra sign to align correctly from start
+                // If this, or the north, room is discovered
+                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+                    map.append(roomXaxisExtra);
+                else
+                    map.append(spaceExtra);
             }
 
-            // Position northRoom = currentPos + Position(0, 1);
-            if (dungeon->areRoomsConnected(currentPos, northRoom))
+            // Or if there is no room to the W or NW
+            else if (!roomExists(WRoom) && !roomExists(NWRoom))
             {
-                map.append(roomXaxis1);
-                map.append(roomYDoors);
-                map.append(roomXaxis2);
+                // If this, or the north, room is discovered
+                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+                    map.append(roomXaxisExtra);
+                else
+                    map.append(spaceExtra);
             }
+
+            // If there is a door to the north room
+            if (dungeon->areRoomsConnected(currentPos, NRoom))
+            {
+                // If this, or the north, room is discovered
+                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+                {
+                    map.append(roomXaxis);  // Add left part of north wall
+                    map.append(roomYDoors); // Add door part of north wall
+                    map.append(roomXaxis2); // Add right part of north wall
+                }
+                else
+                    map.append(space);
+            }
+
+            // Or else there is just a solid wall
             else
             {
-                map.append(roomXaxisFull);
+                // If this, or the north, room is discovered
+                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+                {
+                    map.append(roomXaxisFull);
+                }
+                else
+                    map.append(space);
             }
         }
+
+        // If there is NOT a room on current pos
         else
         {
-            Position westRoom = currentPos + Position(-1, 0);
-            Position northRoom = currentPos + Position(0, 1);
-            Position NWRoom = currentPos + Position(-1, 1);
-            Position potentialEastRoom = currentPos + Position(1, 0);
-            if (allDungeonRooms->find(northRoom.toString()) != allDungeonRooms->end() && allDungeonRooms->find(northRoom.toString())->second.isDiscovered == true)
+            if (allDungeonRooms->find(NRoom.toString()) != allDungeonRooms->end())
             {
-                if (xpos == lowestX || (allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end() &&
+                if (xpos == lowestX || (allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end() &&
                                         allDungeonRooms->find(NWRoom.toString()) == allDungeonRooms->end()))
                 {
                     map.append(roomXaxisExtra); //One extra sign to align correctly from start
@@ -115,12 +141,12 @@ void Map::drawYDividers(int yLevel)
             }
             else
             {
-                if (xpos == lowestX || (allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end() &&
+                if (xpos == lowestX || (allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end() &&
                                         allDungeonRooms->find(NWRoom.toString()) == allDungeonRooms->end()))
                 {
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
-                map.append(space);
+                map.append(spaceBetweenRooms);
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
@@ -146,8 +172,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         {
             if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
-                Position westRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                Position WRoom = currentPos + Position(-1, 0);
+                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                 {
                     map.append(roomYaxis);
                 }
@@ -161,12 +187,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
             }
             else
             {
-                Position westRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                Position WRoom = currentPos + Position(-1, 0);
+                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                 {
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
-                map.append(space);
+                map.append(spaceBetweenRooms);
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
@@ -178,14 +204,14 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         {
             if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
-                Position westRoom = currentPos + Position(-1, 0);
+                Position WRoom = currentPos + Position(-1, 0);
                 Position potentialEastRoom = currentPos + Position(1, 0);
 
-                if (dungeon->areRoomsConnected(currentPos, westRoom))
+                if (dungeon->areRoomsConnected(currentPos, WRoom))
                 {
                     // If the room is connected to a room to the left AND
                     // If it's the first room or there is no room to the left
-                    if (xpos == lowestX && allDungeonRooms->find(westRoom.toString()) != allDungeonRooms->end())
+                    if (xpos == lowestX && allDungeonRooms->find(WRoom.toString()) != allDungeonRooms->end())
                     {
                         map.append(roomXDoors);
                     }
@@ -194,7 +220,7 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                 {
                     // If the room is not connected to a room to the left AND
                     // If it's the first room or there is no room to the left
-                    if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                    if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                     {
                         map.append(roomYaxis);
                     }
@@ -219,12 +245,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
             }
             else
             {
-                Position westRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                Position WRoom = currentPos + Position(-1, 0);
+                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                 {
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
-                map.append(space);
+                map.append(spaceBetweenRooms);
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
@@ -236,8 +262,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
         {
             if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
             {
-                Position westRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                Position WRoom = currentPos + Position(-1, 0);
+                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                 {
                     map.append(roomYaxis);
                 }
@@ -251,12 +277,12 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
             }
             else
             {
-                Position westRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(westRoom.toString()) == allDungeonRooms->end())
+                Position WRoom = currentPos + Position(-1, 0);
+                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
                 {
                     map.append(spaceExtra); //one extra space for correct alignment
                 }
-                map.append(space);
+                map.append(spaceBetweenRooms);
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
