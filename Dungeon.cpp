@@ -24,6 +24,9 @@ Dungeon::Dungeon()
     lastPos = createNextRoom(lastPos, SOUTH, "Room 12");
     lastPos = createNextRoom(lastPos, SOUTH, "Room 13");
 
+    // createNextRoom(lastPos, EAST, "Room 1");
+    // createNextRoom(lastPos, NORTH, "Room 1");
+    // createNextRoom(lastPos, WEST, "Room 1");
     // lastPos = createNextRoom(lastPos, SOUTH, "Room 1");
     // lastPos = createNextRoom(lastPos, EAST, "Room 2");
     // lastPos = createNextRoom(lastPos, EAST, "Room 3");
@@ -98,19 +101,6 @@ bool Dungeon::createRoom(Position pos, std::string name)
         return true;
     } else return false;
 }
-
-// std::vector<std::string> Dungeon::getRoomDoors(Position& currentRoomPos)
-// {
-//     std::vector<std::string> roomDoors;
-//     for (auto i = allDungeonDoors.begin(); i != allDungeonDoors.end(); i++)
-//     {
-//         if (*i->second.roomA == currentRoomPos || *i->second.roomB == currentRoomPos)
-//         {
-//             roomDoors.push_back(i->first);
-//         }
-//     }
-//     return roomDoors;
-// }
 
 std::vector<Door*> Dungeon::getRoomDoors(Position& currentRoomPos)
 {

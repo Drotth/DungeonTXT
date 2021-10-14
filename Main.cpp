@@ -42,6 +42,5 @@ int main()
 
 	// Verify maps
 	Map map(newDungeon);
-	map.calculateDungeonSize();
 	map.printMap();
 }

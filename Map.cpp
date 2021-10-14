@@ -231,6 +231,8 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
 
 void Map::printMap()
 {
+    calculateDungeonSize();
+
     int xLength = (highestX - lowestX) + 1;
     int yLength = (highestY - lowestY) + 1;
 

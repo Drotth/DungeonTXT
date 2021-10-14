@@ -17,12 +17,12 @@ private:
 	std::unordered_map<std::string, Room> *allDungeonRooms;
 	std::unordered_map<std::string, Door> *allDungeonDoors;
 	Dungeon *dungeon;
-
+	
+	void calculateDungeonSize();
 	void drawYDividers(int);
 	void drawRowRooms(int, ROOMPART);
 
 public:
 	Map(Dungeon&);
-	void calculateDungeonSize();
 	void printMap();
 };
