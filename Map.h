@@ -20,6 +20,8 @@ private:
 	Position playerPos;
 	
 	void calculateDungeonSize();
+	bool roomExists(Position&);
+	bool roomIsDiscovered(Position&);
 	void drawYDividers(int);
 	void drawRowRooms(int, ROOMPART);
 

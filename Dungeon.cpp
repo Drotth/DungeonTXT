@@ -15,9 +15,9 @@ Dungeon::Dungeon()
     // allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
 
     lastPos = createNextRoom(lastPos, NORTH, "Room 1");
-    // allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
+    allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
     lastPos = createNextRoom(lastPos, NORTH, "Room 2");
-    // allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
+    allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
     createRoom(lastPos + Position(1,0), "Extraroom for test");
     allDungeonRooms.at((lastPos + Position(1,0)).toString()).isDiscovered = true;
     lastPos = createNextRoom(lastPos, WEST, "Room 3");
