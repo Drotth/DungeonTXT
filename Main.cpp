@@ -9,7 +9,7 @@ int main()
 {
 	Dungeon newDungeon;
 
-	// Verify room/door setups
+	// // Verify room/door setups
 	// cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
 	// cout << "Nbr of doors: " << newDungeon.allDungeonDoors.size() << endl;
 
@@ -20,21 +20,28 @@ int main()
 
 	// for (auto i2 = newDungeon.allDungeonDoors.begin(); i2 != newDungeon.allDungeonDoors.end(); i2++)
 	// {
-	// 	cout << i2->second.doorName << " goes to rooms: " << i2->second.roomA << "\t" << i2->second.roomB << endl;
+	// 	cout << i2->second.doorName << " goes to rooms: " << *i2->second.roomA << "\t" << *i2->second.roomB << endl;
 	// }
 
-	// // Verify get doors in room
-	// string currentRoom = "Room 2";
-	// vector<string> doors = newDungeon.getRoomDoors(currentRoom);
+	// // // Verify get doors in room
+	// Position currentRoom = newDungeon.allDungeonRooms.at("x:0,y:2").roomPos;
+	// // vector<string> doors = newDungeon.getRoomDoors(currentRoom);
+	// vector<Door*> doors = newDungeon.getRoomDoors(currentRoom);
 
-	// cout << "Doors in " << currentRoom << endl;
-	// for (string door : doors)
+	// // cout << "Doors in " << currentRoom << endl;
+	// // for (string door : doors)
+	// // {
+	// // 	cout << door << endl;
+	// // }
+
+	// cout << "Doors in \"" << currentRoom << "\":" << endl;
+	// for (Door* door : doors)
 	// {
-	// 	cout << door << endl;
+	// 	cout << door->doorName << endl;
 	// }
 
 	// Verify maps
-	Map map(newDungeon.allDungeonRooms, newDungeon.allDungeonDoors);
+	Map map(newDungeon);
 	map.calculateDungeonSize();
 	map.printMap();
 }

@@ -4,6 +4,8 @@
 #include <iostream>
 #include "Dungeon.h"
 
+enum ROOMPART {TOP, MIDDLE, BOTTOM};
+
 class Map
 {
 private:
@@ -12,13 +14,15 @@ private:
 	int lowestY;
 	int highestY;
 	std::string map;
-
-	void addYDivider(int);
-
-public:
 	std::unordered_map<std::string, Room> *allDungeonRooms;
 	std::unordered_map<std::string, Door> *allDungeonDoors;
-	Map(std::unordered_map<std::string, Room> &, std::unordered_map<std::string, Door> &);
+	Dungeon *dungeon;
+
+	void drawYDividers(int);
+	void drawRowRooms(int, ROOMPART);
+
+public:
+	Map(Dungeon&);
 	void calculateDungeonSize();
 	void printMap();
 };

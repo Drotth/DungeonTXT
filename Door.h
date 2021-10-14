@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
+#include "Position.h"
 
 class Door
 {
 public:
     std::string doorName;
-    std::string roomA;
-    std::string roomB;
-    Door(std::string, std::string, std::string);
+    Position* roomA;
+    Position* roomB;
+    Door(std::string, Position&, Position&);
 };

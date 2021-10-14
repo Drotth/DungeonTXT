@@ -3,16 +3,21 @@
 using namespace std;
 
 string space = "         ";
-string roomXaxis = "---------";
-string roomEmpty = "|       |";
+string roomXaxisFull = "---------";
+string roomXaxis = "---";
+string roomYaxis = "|";
+string roomEmpty = "       ";
+string roomYDoors = "=";
+string roomXDoors = "| |";
 string roomPlayerTop = "|  _o_  |";
 string roomPlayerMiddle = "|   |   |";
 string roomPlayerBottom = "|  / \\  |";
 
-Map::Map(unordered_map<string, Room> &rooms, unordered_map<string, Door> &doors)
+Map::Map(Dungeon& inDungeon)
 {
-    allDungeonRooms = &rooms;
-    allDungeonDoors = &doors;
+    dungeon = &inDungeon;
+    allDungeonRooms = &inDungeon.allDungeonRooms;
+    allDungeonDoors = &inDungeon.allDungeonDoors;
 
     lowestX = 0;
     lowestY = 0;
@@ -26,7 +31,6 @@ void Map::calculateDungeonSize()
 {
     for (auto i = allDungeonRooms->begin(); i != allDungeonRooms->end(); i++)
     {
-        // cout << i->second.roomPos.x << "\t" << i->second.roomPos.y << endl;
         if (i->second.roomPos.x < lowestX)
             lowestX = i->second.roomPos.x;
         if (i->second.roomPos.x > highestX)
@@ -36,34 +40,94 @@ void Map::calculateDungeonSize()
         if (i->second.roomPos.y > highestY)
             highestY = i->second.roomPos.y;
     }
-
-    // cout << "Lowest X (low left corner):\t" + to_string(lowestX) << endl
-    //      << "Highest X (low right corner):\t" + to_string(highestX) << endl
-    //      << "Lowest Y (high left corner):\t" + to_string(lowestY) << endl
-    //      << "Highest Y (high right corner):\t" + to_string(highestY) << endl;
 }
 
-void Map::addYDivider(int yLevel)
+void Map::drawYDividers(int yLevel)
 {
     Position currentPos(lowestX, yLevel);
 
     for (int xpos = lowestX; xpos <= highestX; xpos++)
     {
         currentPos = Position(xpos, yLevel);
-        // cout << "At position: " << currentPos;
+
         if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
         {
-            // cout << roomXaxis;
-            map.append(roomXaxis);
+            Position potentialNorthRoom = currentPos + Position(0, 1);
+            if (dungeon->areRoomsConnected(currentPos, potentialNorthRoom)){
+                map.append(roomXaxis);
+                map.append(roomXDoors);
+                map.append(roomXaxis);
+            } else map.append(roomXaxisFull);
         }
         else
         {
-            // cout << space;
-            map.append(space);
+            Position potentialNorthRoom = currentPos + Position(0, 1);
+            if (allDungeonRooms->find(potentialNorthRoom.toString()) != allDungeonRooms->end())
+            {
+                map.append(roomXaxisFull);
+            }
+            else
+                map.append(space);
         }
     }
 
-    // cout << endl;
+    map.append("\n");
+}
+void Map::drawRowRooms(int yLevel, ROOMPART part)
+{
+    Position currentPos(lowestX, yLevel);
+
+    for (int xpos = lowestX; xpos <= highestX; xpos++)
+    {
+        currentPos = Position(xpos, yLevel);
+
+        switch (part)
+        {
+        case TOP:
+        {
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            {
+                map.append(roomYaxis);
+                map.append(roomEmpty);
+                map.append(roomYaxis);
+            }
+            else
+            {
+                map.append(space);
+            }
+            break;
+        }
+        case MIDDLE:
+        {
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            {
+                map.append(roomYaxis);
+                map.append(roomEmpty);
+                map.append(roomYaxis);
+            }
+            else
+            {
+                map.append(space);
+            }
+            break;
+        }
+        case BOTTOM:
+        {
+            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end())
+            {
+                map.append(roomYaxis);
+                map.append(roomEmpty);
+                map.append(roomYaxis);
+            }
+            else
+            {
+                map.append(space);
+            }
+            break;
+        }
+        }
+    }
+
     map.append("\n");
 }
 
@@ -76,11 +140,14 @@ void Map::printMap()
 
     for (int index = highestY; index >= lowestY; index--)
     {
-        addYDivider(index);
-        // build 3 row rooms
-        // If last iteration, add final Y divider
+        drawYDividers(index);
+        drawRowRooms(index, TOP);
+        drawRowRooms(index, MIDDLE);
+        drawRowRooms(index, BOTTOM);
+
+        if (index == lowestY) drawYDividers(index-1);
     }
 
     cout << endl
-         << map;
+         << map << flush;
 }

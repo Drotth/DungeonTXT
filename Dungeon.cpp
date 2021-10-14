@@ -13,6 +13,18 @@ Dungeon::Dungeon()
     lastPos = createNextRoom(lastPos, NORTH, "Room 4");
     lastPos = createNextRoom(lastPos, SOUTH, "Room 5");
     lastPos = createNextRoom(lastPos, NORTH, "Room 6");
+    createRoom(lastPos + Position(0,1), "Extraroom for test");
+    lastPos = createNextRoom(lastPos, EAST, "Room 7");
+    lastPos = createNextRoom(lastPos, EAST, "Room 8");
+
+    // lastPos = createNextRoom(lastPos, SOUTH, "Room 1");
+    // lastPos = createNextRoom(lastPos, EAST, "Room 2");
+    // lastPos = createNextRoom(lastPos, EAST, "Room 3");
+    // lastPos = createNextRoom(lastPos, NORTH, "Room 4");
+    // lastPos = createNextRoom(lastPos, NORTH, "Room 5");
+    // lastPos = createNextRoom(lastPos, NORTH, "Room 6");
+    // lastPos = createNextRoom(lastPos, WEST, "Room 7");
+    // lastPos = createNextRoom(lastPos, WEST, "Room 8");
 }
 
 Position Dungeon::createStartRoom()
@@ -58,7 +70,7 @@ Position Dungeon::createNextRoom(Position previousPos, Direction dir, std::strin
     if (createRoom(newRoomPos, name))
     {
         std::string newDoorName = "Door" + previousPos.toString() + "-" + newRoomPos.toString();
-        Door newDoor(newDoorName, allDungeonRooms.at(previousPos.toString()).roomName, allDungeonRooms.at(newRoomPos.toString()).roomName);
+        Door newDoor(newDoorName, allDungeonRooms.at(previousPos.toString()).roomPos, allDungeonRooms.at(newRoomPos.toString()).roomPos);
         allDungeonDoors.insert({newDoorName, newDoor});
 
         return newRoomPos;
@@ -80,15 +92,42 @@ bool Dungeon::createRoom(Position pos, std::string name)
     } else return false;
 }
 
-std::vector<std::string> Dungeon::getRoomDoors(std::string currentRoomName)
+// std::vector<std::string> Dungeon::getRoomDoors(Position& currentRoomPos)
+// {
+//     std::vector<std::string> roomDoors;
+//     for (auto i = allDungeonDoors.begin(); i != allDungeonDoors.end(); i++)
+//     {
+//         if (*i->second.roomA == currentRoomPos || *i->second.roomB == currentRoomPos)
+//         {
+//             roomDoors.push_back(i->first);
+//         }
+//     }
+//     return roomDoors;
+// }
+
+std::vector<Door*> Dungeon::getRoomDoors(Position& currentRoomPos)
 {
-    std::vector<std::string> roomDoors;
+    std::vector<Door*> roomDoors;
     for (auto i = allDungeonDoors.begin(); i != allDungeonDoors.end(); i++)
     {
-        if (i->second.roomA == currentRoomName || i->second.roomB == currentRoomName)
+        if (*i->second.roomA == currentRoomPos || *i->second.roomB == currentRoomPos)
         {
-            roomDoors.push_back(i->first);
+            roomDoors.push_back(&i->second);
         }
     }
     return roomDoors;
+}
+
+bool Dungeon::areRoomsConnected(Position& firstRoom, Position& secondRoom){
+    std::vector<Door*> firstRoomDoors = getRoomDoors(firstRoom);
+    std::vector<Door*> secondRoomDoors = getRoomDoors(secondRoom);
+
+    for (Door* firstRoomDoor : firstRoomDoors){
+        for (Door* secondRoomDoor : secondRoomDoors){
+            if (firstRoomDoor->doorName == secondRoomDoor->doorName){
+                return true;
+            }
+        }
+    }
+    return false;
 }

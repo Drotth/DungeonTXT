@@ -16,6 +16,8 @@ public:
 	Dungeon();
 	Position createStartRoom();
 	Position createNextRoom(Position, Direction, std::string);
-	std::vector<std::string> getRoomDoors (std::string);
+	// std::vector<std::string> getRoomDoors (Position&);
+	std::vector<Door*> getRoomDoors (Position&);
+	bool areRoomsConnected(Position&, Position&);
 };
 
