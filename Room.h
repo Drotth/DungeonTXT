@@ -31,11 +31,11 @@ struct Position
 
     friend std::ostream &operator<<(std::ostream &os, const Position &pos)
     {
-        return os << "x:" << pos.x << ", y:" << pos.y;
+        return os << "x:" << pos.x << ",y:" << pos.y;
     }
 
     std::string toString() {
-        return "x:" + std::to_string(x) + ", y:" + std::to_string(y); 
+        return "x:" + std::to_string(x) + ",y:" + std::to_string(y); 
     }
 };
 

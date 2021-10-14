@@ -63,8 +63,11 @@ Position Dungeon::createNextRoom(Position previousPos, Direction dir, std::strin
 
         return newRoomPos;
     }
-    else
+    else{
+        //randomize if there is to be a door created before returning previous pos
+        //also that needs a check if there already is a door
         return previousPos;
+    }
 }
 
 bool Dungeon::createRoom(Position pos, std::string name)
