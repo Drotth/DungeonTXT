@@ -8,10 +8,14 @@ using namespace std;
 
 int main()
 {
-	Dungeon newDungeon;
+	Dungeon newDungeon(10);
+
+	Map map(newDungeon);
 
 	Player player;
+
 	player.currentRoom = Position(0,0);
+	map.setPlayerPos(player.currentRoom);
 
 	// // Verify room/door setups
 	// cout << "Nbr of rooms: " << newDungeon.allDungeonRooms.size() << endl;
@@ -45,8 +49,6 @@ int main()
 	// }
 
 	// Verify maps
-	Map map(newDungeon);
-	map.setPlayerPos(player.currentRoom);
 	map.printMap();
 
 	// string input;
