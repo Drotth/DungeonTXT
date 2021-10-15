@@ -9,6 +9,7 @@ string spaceExtra = ".";
 
 // Walls
 string roomXaxisFull = "--------";
+string roomXaxisFull2 = "-------";
 string roomXaxisExtra = "-";
 string roomXaxis = "--";
 string roomXaxis2 = "---";
@@ -76,117 +77,59 @@ void Map::drawYDividers(int yLevel)
         Position WRoom = currentPos + Position(-1, 0);
         Position NRoom = currentPos + Position(0, 1);
         Position NWRoom = currentPos + Position(-1, 1);
-
-        // If there is a room on current pos
-        if (roomExists(currentPos))
+        // If this is the first position to the left
+        if (xpos == lowestX)
         {
-            // If the position of this room is to the far left
-            if (xpos == lowestX)
+            if ((roomExists(currentPos) && roomIsDiscovered(currentPos)) ||
+                (roomExists(NRoom) && roomIsDiscovered(NRoom)))
             {
-                // If this, or the north, room is discovered
-                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
-                    map.append(roomXaxisExtra);
-                else
-                    map.append("e");
+                map.append(roomXaxisExtra);
             }
-
-            // Or if there is no room to the W or NW
-            else if (!roomExists(WRoom) && !roomExists(NWRoom))
-            {
-                // If this, or the north, room is discovered
-                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
-                    map.append(roomXaxisExtra);
-                else
-                    map.append(spaceExtra);
-            }
-
-            // If there is a door to the north room
-            if (dungeon->areRoomsConnected(currentPos, NRoom))
-            {
-                // If this, or the north, room is discovered
-                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
-                {
-                    map.append(roomXaxis);  // Add left part of north wall
-                    map.append(roomYDoors); // Add door part of north wall
-                    map.append(roomXaxis2); // Add right part of north wall
-                }
-                else
-                    map.append(space);
-            }
-
-            // Or else there is just a solid wall
             else
-            {
-                // If this, or the north, room is discovered
-                if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
-                {
-                    map.append(roomXaxisFull);
-                }
-                else if (!roomIsDiscovered(currentPos)){
-                    // map.append(spaceBetweenRooms);
-                    map.append("1-----7");
-                }
-                else
-                    map.append(space);
-            }
+                map.append(spaceExtra);
         }
 
-        // If there is NOT a room on current pos
+        // If it not the first to the left, but first part of another room
         else
         {
-            // But there is a room to the north
-            if (roomExists(NRoom))
+            if ((roomExists(currentPos) && roomIsDiscovered(currentPos)) ||
+                (roomExists(NRoom) && roomIsDiscovered(NRoom)) ||
+                (roomExists(WRoom) && roomIsDiscovered(WRoom)) ||
+                (roomExists(NWRoom) && roomIsDiscovered(NWRoom)))
             {
-                // If the position of this room is to the far left
-                if (xpos == lowestX)
-                {
-                    // If the room is discovered
-                    if (roomIsDiscovered(NRoom))
-                        map.append(roomXaxisExtra);
-                    else
-                        map.append(spaceExtra);
-                }
-
-                // Or if there is no room to the W or NW
-                else if (!roomExists(WRoom) && !roomExists(NWRoom))
-                {
-                    // If this, or the north, room is discovered
-                    if (roomIsDiscovered(NRoom))
-                        map.append(roomXaxisExtra);
-                    else
-                        map.append(spaceExtra);
-                }
-
-                // If this, or the north, room is discovered
-                if (roomIsDiscovered(NRoom))
-                    map.append(roomXaxisFull);
-                else
-                    map.append(space);
+                map.append(roomXaxisExtra);
             }
+            else
+                map.append(spaceExtra);
+        }
 
-            // Or there is NOT a room to the north
+        // What to fill the remainder with
+        if ((roomExists(currentPos) && roomIsDiscovered(currentPos)) ||
+            (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+        {
+            if(roomExists(currentPos) && roomExists(NRoom)){
+                if(dungeon->areRoomsConnected(currentPos, NRoom)){
+                    map.append(roomXaxis);
+                    map.append(roomYDoors);
+                    map.append(roomXaxis);
+                } else map.append(roomXaxisFull2);
+            } else map.append(roomXaxisFull2);
+        }
+        else
+        {
+            map.append(spaceBetweenRooms);
+        }
+
+        if (xpos == highestX)
+        {
+            if ((roomExists(currentPos) && roomIsDiscovered(currentPos)) ||
+                (roomExists(NRoom) && roomIsDiscovered(NRoom)))
+            {
+                map.append(roomXaxisExtra);
+            }
             else
             {
-                // If the position of this position is to the far left
-                if (xpos == lowestX)
-                {
-                    map.append(spaceExtra);
-                }
-
-                // Or if there is no room to the W or NW
-                else if (!roomExists(WRoom) && !roomExists(NWRoom))
-                {
-                    map.append(spaceExtra);
-                }
-
-                // Add empty space between positions, on positions without rooms
-                map.append(spaceBetweenRooms);
-
-                // If this empty position is to the far right of the map
-                if (xpos == highestX)
-                {
-                    map.append(spaceExtra);
-                }
+                map.append(spaceExtra);
             }
         }
     }
@@ -306,7 +249,9 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                         {
                             map.append(roomXDoors);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         if (!roomIsDiscovered(WRoom))
                         {
                             map.append(roomYaxis);
@@ -350,7 +295,9 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
                         {
                             map.append(spaceExtra);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         if (!roomIsDiscovered(WRoom))
                         {
                             map.append(spaceExtra);
@@ -483,6 +430,7 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
 
     But for whatever reason, this logic failed severely and I need to come back
     to this later.
+    Update: the drawYDividers refactoring is complete.
 */
 
 void Map::setPlayerPos(Position &pos)
