@@ -8,7 +8,8 @@ using namespace std;
 
 int main()
 {
-	Dungeon newDungeon(10);
+	Dungeon newDungeon(10, true, true);
+	// Dungeon newDungeon;
 
 	Map map(newDungeon);
 

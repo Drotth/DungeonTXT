@@ -4,8 +4,8 @@
 std::random_device dev;
 std::mt19937 rng(dev());
 std::uniform_int_distribution<std::mt19937::result_type> dist2(1, 2);
+std::uniform_int_distribution<std::mt19937::result_type> dist3(1, 3);
 std::uniform_int_distribution<std::mt19937::result_type> dist4(1, 4);
-std::uniform_int_distribution<std::mt19937::result_type> dist6(1, 6);
 
 Dungeon::Dungeon()
 {
@@ -60,29 +60,97 @@ Dungeon::Dungeon()
     // lastPos = createNextRoom(lastPos, WEST, "Room 8");
 }
 
-Dungeon::Dungeon(int nbrOfRooms)
+Dungeon::Dungeon(int nbrOfRooms, bool favorTurns, bool extraDoors)
 {
     roomResult resStart = createStartRoom();
     Position lastPos = std::get<1>(resStart);
     Direction lastDir;
     int createdRooms = 1;
 
-    for (int index = 0; index < nbrOfRooms; index++){
+    while (createdRooms < nbrOfRooms)
+    // for (int index = 0; index < nbrOfRooms; index++)
+    {
 
         Direction dir;
 
-        if(dist4(rng) == 1) dir = NORTH;
-        else if (dist4(rng) == 2) dir = SOUTH;
-        else if (dist4(rng) == 3) dir = WEST;
-        else if (dist4(rng) == 4) dir = EAST;
+        if (!favorTurns)
+        {
+            if (dist4(rng) == 1)
+                dir = NORTH;
+            else if (dist4(rng) == 2)
+                dir = SOUTH;
+            else if (dist4(rng) == 3)
+                dir = WEST;
+            else if (dist4(rng) == 4)
+                dir = EAST;
+        }
 
-        roomResult res = createNextRoom(lastPos, dir, "Room " + createdRooms+1);
+        else
+        {
+            if (lastDir == NORTH || lastDir == SOUTH)
+            {
+                if (dist2(rng) == 1)
+                    dir = WEST;
+                else if (dist2(rng) == 2)
+                    dir = EAST;
+            }
+            else if (lastDir == EAST || lastDir == WEST)
+            {
+                if (dist2(rng) == 1)
+                    dir = NORTH;
+                else if (dist2(rng) == 2)
+                    dir = SOUTH;
+            }
+            else
+            {
+                if (dist4(rng) == 1)
+                    dir = NORTH;
+                else if (dist4(rng) == 2)
+                    dir = SOUTH;
+                else if (dist4(rng) == 3)
+                    dir = WEST;
+                else if (dist4(rng) == 4)
+                    dir = EAST;
+            }
+        }
+
+        roomResult res = createNextRoom(lastPos, dir, "Room " + createdRooms + 1);
 
         // If a new room was built
-        if(std::get<0>(res) == 1){
+        if (std::get<0>(res))
+        {
             createdRooms += 1;
             lastDir = dir;
             lastPos = std::get<1>(res);
+
+            if (extraDoors)
+            {
+                Position toNorth = lastPos + Position(0, 1);
+                Position toSouth = lastPos + Position(0, -1);
+                Position toWest = lastPos + Position(-1, 0);
+                Position toEast = lastPos + Position(1, 0);
+
+                if (roomExists(toNorth) && !areRoomsConnected(lastPos, toNorth))
+                {
+                    if (dist3(rng) == 1)
+                        createDoor(lastPos, toNorth);
+                }
+                if (roomExists(toSouth) && !areRoomsConnected(lastPos, toSouth))
+                {
+                    if (dist3(rng) == 1)
+                        createDoor(lastPos, toSouth);
+                }
+                if (roomExists(toWest) && !areRoomsConnected(lastPos, toWest))
+                {
+                    if (dist3(rng) == 1)
+                        createDoor(lastPos, toWest);
+                }
+                if (roomExists(toEast) && !areRoomsConnected(lastPos, toEast))
+                {
+                    if (dist3(rng) == 1)
+                        createDoor(lastPos, toEast);
+                }
+            }
         }
 
         allDungeonRooms.at(lastPos.toString()).isDiscovered = true;
@@ -132,21 +200,16 @@ roomResult Dungeon::createNextRoom(Position previousPos, Direction dir, std::str
 
     if (createRoom(newRoomPos, name))
     {
-        std::string newDoorName = "Door" + previousPos.toString() + "-" + newRoomPos.toString();
-        Door newDoor(newDoorName, allDungeonRooms.at(previousPos.toString()).roomPos, allDungeonRooms.at(newRoomPos.toString()).roomPos);
-        allDungeonDoors.insert({newDoorName, newDoor});
-
+        createDoor(previousPos, newRoomPos);
         return roomResult(true, newRoomPos);
     }
     else
     {
         if (!areRoomsConnected(previousPos, newRoomPos))
         {
-            if (dist2(rng) == 1)
+            if (dist3(rng) == 1)
             {
-                std::string newDoorName = "Door" + previousPos.toString() + "-" + newRoomPos.toString();
-                Door newDoor(newDoorName, allDungeonRooms.at(previousPos.toString()).roomPos, allDungeonRooms.at(newRoomPos.toString()).roomPos);
-                allDungeonDoors.insert({newDoorName, newDoor});
+                createDoor(previousPos, newRoomPos);
             }
         }
         return roomResult(false, previousPos);
@@ -163,6 +226,15 @@ bool Dungeon::createRoom(Position pos, std::string name)
     }
     else
         return false;
+}
+
+bool Dungeon::createDoor(Position &firstRoom, Position &secondRoom)
+{
+    std::string newDoorName = "Door" + firstRoom.toString() + "-" + secondRoom.toString();
+    Door newDoor(newDoorName, allDungeonRooms.at(firstRoom.toString()).roomPos, allDungeonRooms.at(secondRoom.toString()).roomPos);
+    allDungeonDoors.insert({newDoorName, newDoor});
+
+    return true;
 }
 
 std::vector<Door *> Dungeon::getRoomDoors(Position &currentRoomPos)
@@ -194,4 +266,9 @@ bool Dungeon::areRoomsConnected(Position &firstRoom, Position &secondRoom)
         }
     }
     return false;
+}
+
+bool Dungeon::roomExists(Position &pos)
+{
+    return (allDungeonRooms.find(pos.toString()) != allDungeonRooms.end());
 }
