@@ -48,4 +48,26 @@ int main()
 	Map map(newDungeon);
 	map.setPlayerPos(player.currentRoom);
 	map.printMap();
+
+	// string input;
+	
+	// while (input != "exit"){
+
+	// 	cin >> input;
+	// 	if (input == "w"){
+	// 		player.currentRoom = player.currentRoom + Position(0,1);
+	// 	}
+	// 	else if (input == "a"){
+	// 		player.currentRoom = player.currentRoom + Position(-1,0);
+	// 	}
+	// 	else if (input == "s"){
+	// 		player.currentRoom = player.currentRoom + Position(0,-1);
+	// 	}
+	// 	else if (input == "d"){
+	// 		player.currentRoom = player.currentRoom + Position(1,0);
+	// 	} else input = "exit";
+
+	// 	map.setPlayerPos(player.currentRoom);
+	// 	map.printMap();
+	// }
 }

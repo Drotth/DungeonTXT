@@ -8,16 +8,16 @@ string spaceBetweenRooms = ".......";
 string spaceExtra = ".";
 
 // Walls
-string roomXaxisFull = "--------";
-string roomXaxisFull2 = "-------";
+string roomXaxisFull = "-------";
 string roomXaxisExtra = "-";
 string roomXaxis = "--";
-string roomXaxis2 = "---";
 string roomYaxis = "|";
 
 // Doors
 string roomXDoors = " ";
+string roomXDoorsLocked = "/";
 string roomYDoors = "   ";
+string roomYDoorsLocked = " / ";
 
 // Room contents
 string roomEmpty = "       ";
@@ -112,8 +112,8 @@ void Map::drawYDividers(int yLevel)
                     map.append(roomXaxis);
                     map.append(roomYDoors);
                     map.append(roomXaxis);
-                } else map.append(roomXaxisFull2);
-            } else map.append(roomXaxisFull2);
+                } else map.append(roomXaxisFull);
+            } else map.append(roomXaxisFull);
         }
         else
         {
@@ -444,8 +444,6 @@ void Map::printMap()
 
     int xLength = (highestX - lowestX) + 1;
     int yLength = (highestY - lowestY) + 1;
-
-    system("CLS");
 
     for (int index = highestY; index >= lowestY; index--)
     {
