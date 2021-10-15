@@ -87,7 +87,7 @@ void Map::drawYDividers(int yLevel)
                 if (roomIsDiscovered(currentPos) || (roomExists(NRoom) && roomIsDiscovered(NRoom)))
                     map.append(roomXaxisExtra);
                 else
-                    map.append(spaceExtra);
+                    map.append("e");
             }
 
             // Or if there is no room to the W or NW
@@ -122,6 +122,10 @@ void Map::drawYDividers(int yLevel)
                 {
                     map.append(roomXaxisFull);
                 }
+                else if (!roomIsDiscovered(currentPos)){
+                    // map.append(spaceBetweenRooms);
+                    map.append("1-----7");
+                }
                 else
                     map.append(space);
             }
@@ -130,23 +134,55 @@ void Map::drawYDividers(int yLevel)
         // If there is NOT a room on current pos
         else
         {
-            if (allDungeonRooms->find(NRoom.toString()) != allDungeonRooms->end())
+            // But there is a room to the north
+            if (roomExists(NRoom))
             {
-                if (xpos == lowestX || (allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end() &&
-                                        allDungeonRooms->find(NWRoom.toString()) == allDungeonRooms->end()))
+                // If the position of this room is to the far left
+                if (xpos == lowestX)
                 {
-                    map.append(roomXaxisExtra); //One extra sign to align correctly from start
+                    // If the room is discovered
+                    if (roomIsDiscovered(NRoom))
+                        map.append(roomXaxisExtra);
+                    else
+                        map.append(spaceExtra);
                 }
-                map.append(roomXaxisFull);
+
+                // Or if there is no room to the W or NW
+                else if (!roomExists(WRoom) && !roomExists(NWRoom))
+                {
+                    // If this, or the north, room is discovered
+                    if (roomIsDiscovered(NRoom))
+                        map.append(roomXaxisExtra);
+                    else
+                        map.append(spaceExtra);
+                }
+
+                // If this, or the north, room is discovered
+                if (roomIsDiscovered(NRoom))
+                    map.append(roomXaxisFull);
+                else
+                    map.append(space);
             }
+
+            // Or there is NOT a room to the north
             else
             {
-                if (xpos == lowestX || (allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end() &&
-                                        allDungeonRooms->find(NWRoom.toString()) == allDungeonRooms->end()))
+                // If the position of this position is to the far left
+                if (xpos == lowestX)
                 {
-                    map.append(spaceExtra); //one extra space for correct alignment
+                    map.append(spaceExtra);
                 }
+
+                // Or if there is no room to the W or NW
+                else if (!roomExists(WRoom) && !roomExists(NWRoom))
+                {
+                    map.append(spaceExtra);
+                }
+
+                // Add empty space between positions, on positions without rooms
                 map.append(spaceBetweenRooms);
+
+                // If this empty position is to the far right of the map
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
@@ -166,135 +202,288 @@ void Map::drawRowRooms(int yLevel, ROOMPART part)
     {
         currentPos = Position(xpos, yLevel);
 
+        // Capture positions closeby of relevance
+        Position WRoom = currentPos + Position(-1, 0);
+        Position ERoom = currentPos + Position(1, 0);
+
+        // Room content is built in three layers - top, middle & bottom
         switch (part)
         {
+
+        // Build room top content
         case TOP:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
+            // If current room exists AND is discovered
+            if (roomExists(currentPos) && roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
+                //If this is the first room from the left OR
+                //there is not an existing or a discovered room to the left
+                if (xpos == lowestX || !roomExists(WRoom) || !roomIsDiscovered(WRoom))
                 {
                     map.append(roomYaxis);
                 }
+
+                // Add player top graphic
                 if (playerPos == currentPos)
                 {
                     map.append(roomPlayerTop);
                 }
+                // Or an empty room content
                 else
                     map.append(roomEmpty);
+
+                // Draw the right wall
                 map.append(roomYaxis);
             }
-            else
+
+            // If current room exists AND is NOT discovered
+            else if (roomExists(currentPos) && !roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
+                //If this is the first room from the left
+                if ((xpos == lowestX && !roomExists(WRoom)) || !roomExists(WRoom))
                 {
-                    map.append(spaceExtra); //one extra space for correct alignment
+                    map.append(spaceExtra);
                 }
+                // If a room to the left exists
+                if (roomExists(WRoom))
+                {
+                    if (!roomIsDiscovered(WRoom))
+                    {
+                        map.append(spaceExtra);
+                    }
+                }
+
+                //Draw space
                 map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right room of the map
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
                 }
             }
-            break;
+
+            // Or room doesn't exist
+            else
+            {
+                //If this is the first position from the left
+                if (xpos == lowestX || !roomExists(WRoom) || !roomIsDiscovered(WRoom))
+                {
+                    map.append(spaceExtra);
+                }
+
+                map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right position of the map
+                if (xpos == highestX)
+                {
+                    map.append(spaceExtra);
+                }
+            }
         }
+        break;
+
+        // Build room middle content
         case MIDDLE:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
+            // If current room exists AND is discovered
+            if (roomExists(currentPos) && roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                Position potentialEastRoom = currentPos + Position(1, 0);
-
-                if (dungeon->areRoomsConnected(currentPos, WRoom))
+                //If this is the first room from the left OR
+                //there is not an existing or a discovered room to the left
+                if ((xpos == lowestX && !roomExists(WRoom)) || !roomExists(WRoom))
                 {
-                    // If the room is connected to a room to the left AND
-                    // If it's the first room or there is no room to the left
-                    if (xpos == lowestX && allDungeonRooms->find(WRoom.toString()) != allDungeonRooms->end())
-                    {
-                        map.append(roomXDoors);
-                    }
-                }
-                else
-                {
-                    // If the room is not connected to a room to the left AND
-                    // If it's the first room or there is no room to the left
-                    if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
-                    {
-                        map.append(roomYaxis);
-                    }
+                    map.append(roomYaxis);
                 }
 
+                // If a room to the left exists
+                else if (roomExists(WRoom))
+                {
+                    // If the left room is connected by a door
+                    if (dungeon->areRoomsConnected(currentPos, WRoom))
+                    {
+                        if (!roomIsDiscovered(WRoom))
+                        {
+                            map.append(roomXDoors);
+                        }
+                    } else {
+                        if (!roomIsDiscovered(WRoom))
+                        {
+                            map.append(roomYaxis);
+                        }
+                    }
+                }
+
+                // Add player top graphic
                 if (playerPos == currentPos)
                 {
                     map.append(roomPlayerMiddle);
                 }
+                // Or an empty room content
                 else
                     map.append(roomEmpty);
 
-                if (dungeon->areRoomsConnected(currentPos, potentialEastRoom))
+                // Draw the right wall
+                if (dungeon->areRoomsConnected(currentPos, ERoom))
                 {
-                    if (allDungeonRooms->find(potentialEastRoom.toString()) != allDungeonRooms->end())
-                    {
-                        map.append(roomXDoors);
-                    }
+                    map.append(roomXDoors);
                 }
                 else
                     map.append(roomYaxis);
             }
-            else
+
+            // If current room exists AND is NOT discovered
+            else if (roomExists(currentPos) && !roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
+                //If this is the first room from the left
+                if ((xpos == lowestX && !roomExists(WRoom)) || !roomExists(WRoom))
                 {
-                    map.append(spaceExtra); //one extra space for correct alignment
+                    map.append(spaceExtra);
                 }
+                // If a room to the left exists
+                if (roomExists(WRoom))
+                {
+                    // If the left room is connected by a door
+                    if (dungeon->areRoomsConnected(currentPos, WRoom))
+                    {
+                        if (!roomIsDiscovered(WRoom))
+                        {
+                            map.append(spaceExtra);
+                        }
+                    } else {
+                        if (!roomIsDiscovered(WRoom))
+                        {
+                            map.append(spaceExtra);
+                        }
+                    }
+                }
+
+                //Draw space
                 map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right room of the map
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
                 }
             }
-            break;
+
+            // Or room doesn't exist
+            else
+            {
+                //If this is the first position from the left
+                if (xpos == lowestX || !roomExists(WRoom) || !roomIsDiscovered(WRoom))
+                {
+                    map.append(spaceExtra);
+                }
+
+                map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right position of the map
+                if (xpos == highestX)
+                {
+                    map.append(spaceExtra);
+                }
+            }
         }
+        break;
+
+        // Build room bottom content
         case BOTTOM:
         {
-            if (allDungeonRooms->find(currentPos.toString()) != allDungeonRooms->end() && allDungeonRooms->find(currentPos.toString())->second.isDiscovered == true)
+            // If current room exists AND is discovered
+            if (roomExists(currentPos) && roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
+                //If this is the first room from the left OR
+                //there is not an existing or a discovered room to the left
+                if (xpos == lowestX || !roomExists(WRoom) || !roomIsDiscovered(WRoom))
                 {
                     map.append(roomYaxis);
                 }
+
+                // Add player top graphic
                 if (playerPos == currentPos)
                 {
                     map.append(roomPlayerBottom);
                 }
+                // Or an empty room content
                 else
                     map.append(roomEmpty);
+
+                // Draw the right wall
                 map.append(roomYaxis);
             }
-            else
+
+            // If current room exists AND is NOT discovered
+            else if (roomExists(currentPos) && !roomIsDiscovered(currentPos))
             {
-                Position WRoom = currentPos + Position(-1, 0);
-                if (xpos == lowestX || allDungeonRooms->find(WRoom.toString()) == allDungeonRooms->end())
+                //If this is the first room from the left
+                if ((xpos == lowestX && !roomExists(WRoom)) || !roomExists(WRoom))
                 {
-                    map.append(spaceExtra); //one extra space for correct alignment
+                    map.append(spaceExtra);
                 }
+                // If a room to the left exists
+                if (roomExists(WRoom))
+                {
+                    if (!roomIsDiscovered(WRoom))
+                    {
+                        map.append(spaceExtra);
+                    }
+                }
+
+                //Draw space
                 map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right room of the map
                 if (xpos == highestX)
                 {
                     map.append(spaceExtra);
                 }
             }
-            break;
+
+            // Or room doesn't exist
+            else
+            {
+                //If this is the first position from the left
+                if (xpos == lowestX || !roomExists(WRoom) || !roomIsDiscovered(WRoom))
+                {
+                    map.append(spaceExtra);
+                }
+
+                map.append(spaceBetweenRooms);
+
+                //Draw extra space if this is the far right position of the map
+                if (xpos == highestX)
+                {
+                    map.append(spaceExtra);
+                }
+            }
         }
+        break;
         }
     }
 
     map.append("\n");
 }
+
+/*
+    TODO: In regards to the two above functions drawYDividers and drawRowRooms:
+
+    A better solution would be to handle room content and room walls seperately.
+    E.g. in drawYdividers:
+        1. First check if there is a room on this pos OR above and draw walls
+           accordingly, i.e. if anyone of them is discovered. 
+           Checks if it is first room from left etc is still needed.
+        2. Check if there are both rooms and draw door, otherwise a solid wall.
+    E.g. in drawRowRooms:
+        1. First check if there is a room on this pos OR to the left and draw 
+           walls accordingly, i.e. if anyone of them is discovered. 
+        2. Check if there are both rooms and draw door, otherwise a solid wall.
+        3. Continue with drawing room content, only if room is discovered.
+
+    But for whatever reason, this logic failed severely and I need to come back
+    to this later.
+*/
 
 void Map::setPlayerPos(Position &pos)
 {

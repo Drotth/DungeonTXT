@@ -4,6 +4,5 @@ Room::Room(Position pos, std::string name)
 {
     roomPos = pos;
     roomName = name;
-    isDiscovered = true;
+    isDiscovered = false;
 }
-
