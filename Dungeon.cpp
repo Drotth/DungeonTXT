@@ -60,14 +60,14 @@ Dungeon::Dungeon()
     // lastPos = createNextRoom(lastPos, WEST, "Room 8");
 }
 
-Dungeon::Dungeon(int nbrOfRooms, bool favorTurns, bool extraDoors)
+Dungeon::Dungeon(int nbrOfMainRooms, int nbrOfBranches, int branchSize, bool favorTurns, bool extraDoors)
 {
     roomResult resStart = createStartRoom();
     Position lastPos = std::get<1>(resStart);
     Direction lastDir;
     int createdRooms = 1;
 
-    while (createdRooms < nbrOfRooms)
+    while (createdRooms < nbrOfMainRooms)
     // for (int index = 0; index < nbrOfRooms; index++)
     {
 
@@ -114,6 +114,11 @@ Dungeon::Dungeon(int nbrOfRooms, bool favorTurns, bool extraDoors)
             }
         }
 
+
+        // Idea for later: create "distanceTo" between rooms, i.e. straight line length
+        // between rooms. As distance increases, monsters get harder and loot greater
+        // Although room closeby could still be several rooms away...
+        //Hmm, a shortest distance calculator is needed
         roomResult res = createNextRoom(lastPos, dir, "Room " + createdRooms + 1);
 
         // If a new room was built

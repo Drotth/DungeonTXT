@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-	Dungeon newDungeon(10, true, true);
+	Dungeon newDungeon(10, 0, 0, true, true);
 	// Dungeon newDungeon;
 
 	Map map(newDungeon);
@@ -74,3 +74,23 @@ int main()
 	// 	map.printMap();
 	// }
 }
+
+/*
+
+Ideas:
+
+Scenario: set of Dungeons with individual goals, for one big final win
+	- Could be rng generated based on the goal of the previous one, e.g:
+	  If lastRoom was find a key, next room is find chest to unlock, etc
+	- Rooms could have "isWin" var of different types: isExitWin, isBossWin etc
+	- Or items, doors, enemies could have "isWin" attribute
+
+Goals: E.g. SLay the big boss, find the exit, fins a specific item, unlock a specific chest
+	- Connected to the "isWin" thing from above.
+
+Rng dungeon generation: as distance from start room increases, loot should get
+better and enemies get tougher and/or increase.
+	- Could be implemented with a A* (shortest path) calc per individual room
+	- Dungeons should get tougher as Scenario progresses
+
+*/

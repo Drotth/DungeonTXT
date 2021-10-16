@@ -22,13 +22,14 @@ class Dungeon
 private:
 	bool createRoom(Position, std::string);
 	bool createDoor(Position&, Position&);
+	roomResult createStartRoom();
 
 public:
 	std::unordered_map<std::string, Room> allDungeonRooms;
 	std::unordered_map<std::string, Door> allDungeonDoors;
+
 	Dungeon();
-	Dungeon(int, bool, bool);
-	roomResult createStartRoom();
+	Dungeon(int, int, int, bool, bool);
 	roomResult createNextRoom(Position, Direction, std::string);
 	std::vector<Door *> getRoomDoors(Position &);
 	bool areRoomsConnected(Position &, Position &);
